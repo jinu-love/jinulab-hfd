@@ -1,0 +1,139 @@
+
+#debug: true
+
+server:
+  port: 8080
+  timezone: Asia/Seoul
+  shutdown: graceful
+
+logging:
+  config: classpath:logback-dev.xml
+
+spring:
+  jpa:
+   show-sql: true
+   defer-datasource-initialization: true
+   properties:
+     hibernate:
+  devtools:
+    restart:
+      exclude: log/**
+      enabled: false
+    livereload:
+      enabled: true
+
+  datasource:
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+      jdbc-url: jdbc:mariadb://localhost:3306/ISETDXHFDDB?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      #jdbc-url: jdbc:mariadb://13.237.157.202:3306/ISETDXHFDDB?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+      username: HFDADM
+      password: ISETDX-HFDADM!23
+      connection-timeout: 30000
+      pool-name: dafault-poolAuthService
+      idle-timeout: 60000
+      max-lifetime: 180000
+      minimum-idle: 5
+      maximum-pool-size: 5
+      dml:
+        domain: ISETDXHFDDB
+        column-alias-rule-for-map-key: camelcase
+        max-sql-by-path-cache-size: 0
+        default-lock-timeout: 10000
+        replace-null-params: true
+        query-mapper: dev.jinulab.dbist.dml.jdbc.QueryMapperMysql
+  main:
+    banner-mode: 'off'
+    allow-bean-definition-overriding: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: isetdx@gmail.com
+    password: hlid jwhn yihj jqgm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+jwt:
+  secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHaVlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
+  expiration: 1800000 #60분
+  refresh-expiration: 604800000 #7일
+  #expiration: 60000 #1분
+  #refresh-expiration: 180000 #3분
+
+email:
+  verification:
+    expiry-minutes: 5
+
+app:
+  #frontend-url: http://localhost:5173
+  frontend-url: http://happyfriday.iset-dx.com
+  password-reset:
+    expiry-minutes: 30
+
+# ── Swagger / SpringDoc 설정 ──────────────────────────────
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html               # Swagger UI 접속 경로
+    operations-sorter: method            # HTTP 메서드 기준 정렬
+    tags-sorter: alpha                   # 태그 알파벳 정렬
+    display-request-duration: true       # 요청 처리 시간 표시
+    groups-order: asc
+    disable-swagger-default-url: true
+    try-it-out-enabled: true             # Try it out 기본 활성화
+    persist-authorization: true          # 페이지 새로고침 후에도 토큰 유지
+  api-docs:
+    path: /v3/api-docs                   # OpenAPI JSON 경로
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  show-actuator: false
+
+#scheduler:
+#  refresh-token:
+#    # 만료 토큰 삭제 주기 (cron 표현식)
+#    # 현재: 매일 새벽 3시 실행
+#    # 형식: 초 분 시 일 월 요일
+#    default-cron: "0 0 3 * * *"
+#    # 한 번에 삭제할 최대 건수 (0 = 전체 삭제)
+#    default-batch-size: 1000
+
+
+jinulab:
+  entry:
+    mode: DEV
+  namedParameterJdbcOperations:
+    cacheLimit: 200
+  jdbcOperations:
+    fetchSize: 100
+    maxRows: 10001
+  transactionManager:
+    defaultTimeout: 12000
+  sqlAspect:
+    enabled: true
+    prettyPrint: true
+    combinedPrint: true
+    includeElapsedTime: true
+    longElapsedTimeThreshold: 10000
+  scheduling:
+    enable: true
+    #driver-delegate-class: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+    #driver-delegate-class: org.quartz.impl.jdbcjobstore.MSSQLDelegate
+    #driver-delegate-class: org.quartz.impl.jdbcjobstore.oracle.OracleDelegate
+    driver-delegate-class: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+    companyCode: HQC
+    factoryCode: USCVC1
+    userId: admin
+  license:  
+    enabled: true
+    file-path: ./license.lic
+    public-key-path: ./public.key
+    periodic-check-interval: PT1M
+    expiry-warn-days: 30

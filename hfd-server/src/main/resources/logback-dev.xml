@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE project>
+<configuration scan="true" scanPeriod="10 seconds">
+
+	<!--logback에 대한 상태 로그 출력 스킵-->
+	<statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+	<!-- 로그 파일이 저장될 경로 -->
+	<property name="LOG_PATH" value="logs"/>
+	<!-- 로그 파일 이름 -->
+	<property name="LOG_FILE_NAME" value="sampleLog"/>
+	<!-- 로그 출력 패턴-->
+	<property name="LOG_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] - %message - %logger{5}:%method:%line%n"/>
+	<!-- 로그 레벨 -->
+	<!--
+	1) ERROR : 오류 메시지 표시
+	2) WARN : 경고성 메시지 표시
+	3) INFO : 정보성 메시지 표시
+	4) DEBUG : 디버깅하기 위한 메시지 표시
+	5) TRACE : Debug보다 훨씬 상세한 메시지 표시
+	아래에서는 info로 설정하였는데, 이 경우엔 INFO 보다 위에 있는 DEBUG와 TRACE는 표시하지 않는다.
+	-->
+	<property name="LOG_LEVEL" value="info"/>
+	<!-- <property name="LOG_LEVEL" value="debug"/> -->
+	
+	<!-- CONSOLE에 로그 출력 세팅 -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+	
+	<!-- File에 로그 출력 세팅 -->
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 파일 경로 설정 -->
+		<file>${LOG_PATH}/${LOG_FILE_NAME}.log</file>
+		<!-- 출력패턴 설정-->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+		    <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+		    <maxFileSize>10MB</maxFileSize>
+		    <maxHistory>30</maxHistory>
+		    <totalSizeCap>1GB</totalSizeCap>
+		    <cleanHistoryOnStart>true</cleanHistoryOnStart>
+		</rollingPolicy>
+	</appender>
+
+	<!-- 로그 전역 세팅 -->
+	<root level="${LOG_LEVEL}">
+		<!-- 위에 설정한 콘솔 설정 추가 -->
+		<appender-ref ref="CONSOLE"/>
+		<!-- 위에 설정한 파일 설정 추가 -->
+		<appender-ref ref="FILE"/>
+	</root>
+	<logger name="com.netflix.discovery" level="OFF" />
+	<logger name="com.netflix.eureka.discovery" level="OFF" />
+
+	<!-- ✅ HikariCP 로그 제거 -->
+	<logger name="com.zaxxer.hikari.HikariConfig" level="WARN" additivity="false">
+	    <appender-ref ref="CONSOLE"/>
+	</logger>
+	<!--
+	<logger name="com.zaxxer.hikari" level="WARN" additivity="false">
+	    <appender-ref ref="CONSOLE"/>
+	</logger>  
+	-->
+	<!-- ✅ HikariCP 로그를 완전히 숨김 -->
+	<logger name="com.zaxxer.hikari" level="OFF" additivity="false"/>
+
+	<!-- ✅ Hibernate DB 연결 정보 로그 제거 -->
+	<logger name="org.hibernate.orm.connections.pooling" level="WARN" additivity="false"/>
+	
+	<!-- ✅ Spring JPA LoadTimeWeaver 로그 제거 -->
+	<logger name="org.springframework.orm.jpa.persistenceunit" level="WARN" additivity="false"/>
+	
+	<!--
+	<logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	
+	<logger name="com.zaxxer.hikari.pool.HikariPool" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="CONSOLE" />
+	</logger>
+	 -->
+
+</configuration>

@@ -1,0 +1,64 @@
+# Eclipse
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+
+# 로그 및 임시 파일
+*.log
+*.tmp
+*.bak
+tmp/
+temp/
+*~
+
+# 편집기
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+.env
+.venv/
+
+# Java
+*.class
+*.jar
+target/
+build/
+
+# Node
+node_modules/
+npm-debug.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 보안
+.env
+*.pem
+*.key
+
+# Build
+.gradle/
+
+# IDE
+*.iml
+bin/
+
+# Logs
+logs/
+
+# Local config
+.env.*
+application-local.yml
+application-local.properties
+
+# OS
+.DS_Store
+Thumbs.db

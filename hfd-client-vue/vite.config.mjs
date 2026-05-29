@@ -1,0 +1,35 @@
+import { fileURLToPath, URL } from 'node:url';
+
+import { PrimeVueResolver } from '@primevue/auto-import-resolver';
+import vue from '@vitejs/plugin-vue';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig } from 'vite';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+    optimizeDeps: {
+        noDiscovery: true
+    },
+    plugins: [
+        vue(),
+        Components({
+            resolvers: [PrimeVueResolver()]
+        })
+    ],
+    resolve: {
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
+    },
+    server: {
+        port: 5173,
+        proxy: {
+            // /api 로 시작하는 모든 요청을 8080으로 프록시
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false
+            }
+        }
+    }
+});

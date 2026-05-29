@@ -1,0 +1,83 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'dev.jinulab.service'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+repositories {
+	//mavenLocal()    // ✅ iam, framework mavenLocal 참조
+	maven {
+            url = uri(jinulabRepoPath)
+        }
+	mavenCentral()
+}
+
+/*
+configurations.all {
+    resolutionStrategy {
+        force 'org.springframework.security:spring-security-web:7.0.0'
+        force 'org.springframework.security:spring-security-config:7.0.0'
+        force 'org.springframework.security:spring-security-core:7.0.0'
+        force 'org.springframework.security:spring-security-crypto:7.0.0'
+        force 'io.jsonwebtoken:jjwt-api:0.12.6'
+        force 'io.jsonwebtoken:jjwt-impl:0.12.6'
+        force 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+        force 'org.mybatis.spring.boot:mybatis-spring-boot-starter:4.0.1'
+        force 'com.github.pagehelper:pagehelper-spring-boot-starter:2.1.0'
+        force 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
+    }
+}
+*/
+
+dependencies {
+
+	implementation platform('org.springframework.boot:spring-boot-dependencies:4.0.6')
+
+	//implementation fileTree(dir: "libs", includes: ['*.jar'])
+	
+	// ✅ iam + framework api 의존성 자동 전파
+    //    → web, security, mybatis, jwt, mail, aop, kafka, poi, minio 등 모두 자동 포함
+    implementation "dev.jinulab:jinulab-framework:${jinulabVersion}"
+    implementation "dev.jinulab:jinulab-iam:${jinulabVersion}"
+    implementation "dev.jinulab:jinulab-scheduling:${jinulabVersion}"
+    implementation "dev.jinulab:jinulab-license:${jinulabVersion}"
+    //implementation fileTree(dir: jinulabRepoPath, include: ['transceiverx-j-*.jar'])
+	
+	// ── hfd-service 전용 의존성만 선언 ────────────────────────
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.1.1'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'jaxen:jaxen:1.1.4'
+    implementation 'org.jdom:jdom:1.1.3'
+    implementation 'org.jdom:jdom2:2.0.6'
+	
+	// ── Lombok ────────────────────────────────────────────────
+    compileOnly         'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.46'
+	
+	// ── Test ──────────────────────────────────────────────────
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation group: 'org.springframework.security', name: 'spring-security-aspects', version: '6.3.4'
+	testImplementation group: 'com.squareup.okhttp3', name: 'okhttp-testing-support', version: '3.14.9'
+	testImplementation group: 'com.squareup.okhttp3', name: 'mockwebserver', version: '4.12.0'
+	testImplementation group: 'com.squareup.okhttp3', name: 'okhttp-tls', version: '4.12.0'
+
+}
+
+bootJar {
+	mainClass.set("dev.jinulab.isetdx.HfdBackendApplication")
+	duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
+	from('src/main/java') {
+		include '**/*.sql'
+		include '**/*.xml'
+	}
+}
